@@ -1,0 +1,536 @@
+﻿Program.Sub.ScreenSU.Start
+Gui.Form_PRJ..Create(BaseForm)
+Gui.Form_PRJ..Caption("ARC 6849 - Custom Project Status by Group")
+Gui.Form_PRJ..Size(364,143)
+Gui.Form_PRJ..MinX(0)
+Gui.Form_PRJ..MinY(0)
+Gui.Form_PRJ..Position(0,0)
+Gui.Form_PRJ..AlwaysOnTop(False)
+Gui.Form_PRJ..FontName("Tahoma")
+Gui.Form_PRJ..FontSize(8.25)
+Gui.Form_PRJ..ControlBox(True)
+Gui.Form_PRJ..MaxButton(True)
+Gui.Form_PRJ..MinButton(True)
+Gui.Form_PRJ..MousePointer(0)
+Gui.Form_PRJ..Moveable(True)
+Gui.Form_PRJ..Sizeable(True)
+Gui.Form_PRJ..ShowInTaskBar(True)
+Gui.Form_PRJ..TitleBar(True)
+Gui.Form_PRJ..Event(UnLoad,Form_PRJ_UnLoad)
+Gui.Form_PRJ.cmd_BegProj.Create(Button)
+Gui.Form_PRJ.cmd_BegProj.Enabled(True)
+Gui.Form_PRJ.cmd_BegProj.Visible(True)
+Gui.Form_PRJ.cmd_BegProj.Zorder(0)
+Gui.Form_PRJ.cmd_BegProj.Size(29,23)
+Gui.Form_PRJ.cmd_BegProj.Position(127,33)
+Gui.Form_PRJ.cmd_BegProj.Caption("")
+Gui.Form_PRJ.cmd_BegProj.FontName("Tahoma")
+Gui.Form_PRJ.cmd_BegProj.FontSize(8.25)
+Gui.Form_PRJ.cmd_BegProj.Event(Click,cmd_BegProj_Click)
+Gui.Form_PRJ.cmd_BegProj.SvgPicture("icon_browser_color")
+Gui.Form_PRJ.txt_BegProj.Create(TextBox,"",True,99,20,0,17,34,True,0,"Tahoma",8.25,,1)
+Gui.Form_PRJ.txt_BegProj.Locked(True)
+Gui.Form_PRJ.lbl4.Create(Label,"Beginning Project",True,99,13,0,17,15,True,0,"Tahoma",8.5,,0,0)
+Gui.Form_PRJ.lbl4.BorderStyle(0)
+Gui.Form_PRJ.lbl4.FontStyle(True,False,False,False,False)
+Gui.Form_PRJ.cmd_Print.Create(Button)
+Gui.Form_PRJ.cmd_Print.Enabled(True)
+Gui.Form_PRJ.cmd_Print.Visible(True)
+Gui.Form_PRJ.cmd_Print.Zorder(0)
+Gui.Form_PRJ.cmd_Print.Size(48,23)
+Gui.Form_PRJ.cmd_Print.Position(301,75)
+Gui.Form_PRJ.cmd_Print.Caption("Print")
+Gui.Form_PRJ.cmd_Print.FontName("Tahoma")
+Gui.Form_PRJ.cmd_Print.FontSize(8.25)
+Gui.Form_PRJ.cmd_Print.Event(Click,cmd_Print_Click)
+Gui.Form_PRJ.lbl5.Create(Label,"Ending Project",True,81,13,0,211,15,True,0,"Tahoma",8.5,,0,0)
+Gui.Form_PRJ.lbl5.BorderStyle(0)
+Gui.Form_PRJ.lbl5.FontStyle(True,False,False,False,False)
+Gui.Form_PRJ.txt_EndProj.Create(TextBox,"",True,99,20,0,210,34,True,0,"Tahoma",8.25,,1)
+Gui.Form_PRJ.txt_EndProj.Locked(True)
+Gui.Form_PRJ.cmd_EndProj.Create(Button)
+Gui.Form_PRJ.cmd_EndProj.Enabled(True)
+Gui.Form_PRJ.cmd_EndProj.Visible(True)
+Gui.Form_PRJ.cmd_EndProj.Zorder(0)
+Gui.Form_PRJ.cmd_EndProj.Size(29,23)
+Gui.Form_PRJ.cmd_EndProj.Position(320,33)
+Gui.Form_PRJ.cmd_EndProj.Caption("")
+Gui.Form_PRJ.cmd_EndProj.FontName("Tahoma")
+Gui.Form_PRJ.cmd_EndProj.FontSize(8.25)
+Gui.Form_PRJ.cmd_EndProj.SvgPicture("icon_browser_color")
+Gui.Form_PRJ.cmd_EndProj.Event(Click,cmd_EndProj_Click)
+Gui.Form_PRJ.lbl1.Create(Label,"Thru",True,22,13,0,172,36,True,0,"Tahoma",8.25,,0,0)
+Gui.Form_PRJ.lbl1.BorderStyle(0)
+Gui.Form_PRJ.chkHistory.Create(CheckBox)
+Gui.Form_PRJ.chkHistory.Enabled(True)
+Gui.Form_PRJ.chkHistory.Visible(True)
+Gui.Form_PRJ.chkHistory.Zorder(0)
+Gui.Form_PRJ.chkHistory.Size(75,20)
+Gui.Form_PRJ.chkHistory.Position(17,76)
+Gui.Form_PRJ.chkHistory.Caption("History")
+Gui.Form_PRJ.chkHistory.FontName("Tahoma")
+Gui.Form_PRJ.chkHistory.FontSize(8.25)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+V.Global.sError.Declare(String)
+
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+'Author: Arturo Almaguer
+'Date: 8/1/22
+'Customer: Axis Company, quote number 13555
+'This program processes project data to create a new custom Project Status report
+'This script is launched off a new custom menu item under Project Management > Reports > Custom Project Status by Group [6849]
+
+F.Intrinsic.Control.Try
+
+	Function.Intrinsic.UI.UsePixels ' Allows you to use Pixels instead of Twips throughout
+	
+	'Calling sub to validate if custom table exists
+	F.Intrinsic.Control.CallSub("CheckTable")
+	
+	'Showing form
+	gui.Form_PRJ..Show
+
+F.Intrinsic.Control.Catch
+
+	F.Intrinsic.Control.CallSub(CatchError)
+	
+F.Intrinsic.Control.EndTry
+Program.Sub.Main.End
+
+Program.Sub.CatchError.Start
+'To display the error
+F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}", V.Ambient.ScriptPath, V.Ambient.Newline, V.Ambient.SubroutineCalledFrom, V.Ambient.ErrorNumber, V.Ambient.ErrorDescription, V.Ambient.GABVersion, V.Global.sError) 
+F.Intrinsic.UI.Msgbox(V.Global.sError)
+F.Intrinsic.Control.CallSub("Form_PRJ_UnLoad")
+Program.Sub.CatchError.End
+
+Program.Sub.Form_PRJ_UnLoad.Start
+'Making form invisible
+gui.Form_PRJ..Visible(False)
+
+'Closes the connection if it is open
+f.Intrinsic.Control.If(v.ODBC.con.exists,=,"1") 	
+    f.ODBC.Connection!Con.Close
+f.Intrinsic.Control.EndIf
+
+'Ending program
+F.Intrinsic.Control.End
+Program.Sub.Form_PRJ_UnLoad.End
+
+Program.Sub.cmd_BegProj_Click.Start
+'This subroutine allows the user to select a beginning project number to print the custom report for
+
+F.Intrinsic.Control.Try
+	
+	V.Local.sBegProject.Declare(String)
+	V.Local.sTitles.Declare(String)
+	V.Local.iWidths.Declare(Long)
+	
+	'Displaying browser with all existing projects
+	F.Intrinsic.String.Split("Project*!*Description*!*Customer","*!*",V.Local.sTitles)
+	F.Intrinsic.String.Split("100*!*200*!*100","*!*",V.Local.iWidths)
+	
+	'Displaying history project records if option is on, displaying existing projects if its off.
+	F.ODBC.Connection!Con.OpenCompanyConnection
+	F.Intrinsic.Control.If(v.Screen.Form_PRJ!chkHistory.Value, =,1)
+		F.Intrinsic.UI.Browser("Select a history project","Con","select RTRIM(PROJECT) PROJECT, RTRIM(DESCR) DESCRIPTION, RTRIM(CUSTOMER) CUSTOMER from V_PROJECT_HISTORY;", V.Local.sTitles, V.Local.iWidths, V.Local.sBegProject)
+	f.Intrinsic.Control.Else
+		F.Intrinsic.UI.Browser("Select an existing project","Con","select RTRIM(PROJECT) PROJECT, RTRIM(DESCR) DESCRIPTION, RTRIM(CUSTOMER) CUSTOMER from V_PROJECT_MASTER;", V.Local.sTitles, V.Local.iWidths, V.Local.sBegProject)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.Connection!Con.Close
+	
+	F.Intrinsic.Control.If(V.Local.sBegProject.IsNotCancel)
+		
+		'Setting textboxes to selected project number 
+		F.Intrinsic.String.Split(V.Local.sBegProject, "*!*", V.Local.sBegProject)
+		gui.Form_PRJ.txt_BegProj.Text(V.Local.sBegProject(0).Trim)
+		gui.Form_PRJ.txt_EndProj.Text(V.Local.sBegProject(0).Trim)
+
+	F.Intrinsic.Control.Else
+		
+		'Displaying error message
+		F.Intrinsic.UI.Msgbox("A project must be selected.", "ERROR")
+		gui.Form_PRJ.txt_BegProj.Text("")
+		
+	F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Catch
+
+	F.Intrinsic.Control.CallSub(CatchError)
+	
+F.Intrinsic.Control.EndTry
+Program.Sub.cmd_BegProj_Click.End
+
+Program.Sub.cmd_EndProj_Click.Start
+'This subroutine allows the user to select an ending project number to print the custom report for
+
+F.Intrinsic.Control.Try
+	
+	V.Local.sEndProject.Declare(String)
+	V.Local.sTitles.Declare(String)
+	V.Local.iWidths.Declare(Long)
+	
+	'Displaying browser with all existing projects
+	F.Intrinsic.String.Split("Project*!*Description*!*Customer","*!*",V.Local.sTitles)
+	F.Intrinsic.String.Split("100*!*200*!*100","*!*",V.Local.iWidths)
+	
+	'Displaying history project records if option is on, displaying existing projects if its off.
+	F.ODBC.Connection!Con.OpenCompanyConnection
+	F.Intrinsic.Control.If(v.Screen.Form_PRJ!chkHistory.Value, =,1)
+		F.Intrinsic.UI.Browser("Select a history project","Con","select RTRIM(PROJECT) PROJECT, RTRIM(DESCR) DESCRIPTION, RTRIM(CUSTOMER) CUSTOMER from V_PROJECT_HISTORY;", V.Local.sTitles, V.Local.iWidths, V.Local.sEndProject)
+	f.Intrinsic.Control.Else
+		F.Intrinsic.UI.Browser("Select an existing project","Con","select RTRIM(PROJECT) PROJECT, RTRIM(DESCR) DESCRIPTION, RTRIM(CUSTOMER) CUSTOMER from V_PROJECT_MASTER;", V.Local.sTitles, V.Local.iWidths, V.Local.sEndProject)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.Connection!Con.Close
+	
+	F.Intrinsic.Control.If(V.Local.sEndProject.IsNotCancel)
+		
+		'Setting ending project textbox to selected project number 
+		F.Intrinsic.String.Split(V.Local.sEndProject, "*!*", V.Local.sEndProject)
+		gui.Form_PRJ.txt_EndProj.Text(V.Local.sEndProject(0).Trim)
+
+	F.Intrinsic.Control.Else
+		
+		'Displaying error message
+		F.Intrinsic.UI.Msgbox("A project must be selected.", "ERROR")
+		gui.Form_PRJ.txt_EndProj.Text("")
+		
+	F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Catch
+
+	F.Intrinsic.Control.CallSub(CatchError)
+	
+F.Intrinsic.Control.EndTry
+Program.Sub.cmd_EndProj_Click.End
+
+Program.Sub.cmd_Print_Click.Start
+F.Intrinsic.Control.Try
+
+	v.Local.sSQL.Declare(String)
+	v.Local.iCounter.Declare(Long)
+	v.Local.sBegProject.Declare(String)
+	v.Local.sEndProject.Declare(String)
+	v.Local.sProjects.Declare(String)
+	V.Local.iCounter2.Declare(Long)
+	
+	V.Local.sBegProject.Set(V.Screen.Form_PRJ!txt_BegProj.Text)
+	V.Local.sEndProject.Set(V.Screen.Form_PRJ!txt_EndProj.Text)
+	
+	'Exit sub if ending project has a lower project number than begginning one
+	F.Intrinsic.Control.If(V.Local.sBegProject, >, V.Local.sEndProject)
+	
+		F.Intrinsic.UI.Msgbox("Ending project cant have a lower project number than beginning one. ", "ERROR")
+		gui.Form_PRJ.txt_EndProj.Text(V.Local.sBegProject)
+		F.Intrinsic.Control.ExitSub
+			
+	F.Intrinsic.Control.EndIf
+	
+	'Deleting records for same terminal number in custom table
+	F.ODBC.Connection!Con.OpenCompanyConnection
+	F.Intrinsic.String.Build("delete from GCG_6849 where TRMNL = '{0}';", v.Caller.Terminal, V.Local.sSQL)
+	f.ODBC.Connection!Con.Execute(V.Local.sSQL)
+	
+	'Getting all selected project numbers. Based on history option, retrieving data from either active or history table.
+	F.Intrinsic.Control.If(v.Screen.Form_PRJ!chkHistory.Value, =,1)
+		F.Intrinsic.String.Build("select RTRIM(PROJECT) PROJECT from V_PROJECT_HISTORY where PROJECT between '{0}' and '{1}' order by PROJECT", V.Local.sBegProject, V.Local.sEndProject, V.Local.sSQL)
+	f.Intrinsic.Control.Else
+		F.Intrinsic.String.Build("select RTRIM(PROJECT) PROJECT from V_PROJECT_MASTER where PROJECT between '{0}' and '{1}' order by PROJECT", V.Local.sBegProject, V.Local.sEndProject, V.Local.sSQL)
+	F.Intrinsic.Control.EndIf
+	
+	f.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSQL, V.Local.sProjects)
+	F.Intrinsic.String.Split(v.Local.sProjects, "#$#", v.Local.sProjects)
+	
+	'Looping through each project number
+	F.Intrinsic.Control.For(V.Local.iCounter, 0, V.Local.sProjects.UBound, 1)
+
+		'Calling subs to get material and labor costs associated to the project
+		F.Intrinsic.Control.CallSub("MaterialCosts", "Project", V.Local.sProjects(V.Local.iCounter))
+		F.Intrinsic.Control.CallSub("LaborCosts", "Project", V.Local.sProjects(V.Local.iCounter))
+
+		'Merging those two dts
+		F.Data.DataTable.Merge("dtLaborCosts", "dtMaterialCosts", False, 1)
+	
+		'Looping through final dt to save records into custom table
+		F.Intrinsic.Control.For(V.Local.iCounter2, 0, V.DataTable.dtMaterialCosts.RowCount--, 1)
+		
+			F.Intrinsic.String.Build("insert into GCG_6849(TRMNL, USER_ID, PROJECT_NO, GROUP_CODE, GROUP_NAME, GROUP_TYPE, POS, HRS_QTE, HRS_ACTINT, HRS_ACTOUT, HRS_TOTAL, HRS_VAR, DLLS_QTE, DLLS_ACTINT, DLLS_ACTOUT, DLLS_TOTAL, DLLS_VAR) values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}');", v.Caller.Terminal, v.Caller.User, V.DataTable.dtMaterialCosts(V.Local.iCounter2).PROJECT!FieldValTrim, V.DataTable.dtMaterialCosts(V.Local.iCounter2).F_GROUP!FieldValTrim, V.DataTable.dtMaterialCosts(V.Local.iCounter2).GROUP_NAME!FieldValTrim, V.DataTable.dtMaterialCosts(V.Local.iCounter2).GROUP_TYPE!FieldValTrim, V.DataTable.dtMaterialCosts(V.Local.iCounter2).POS!FieldVal, V.DataTable.dtMaterialCosts(V.Local.iCounter2).CUR_HOURS!FieldVal, V.DataTable.dtMaterialCosts(V.Local.iCounter2).ACT_HOURS!FieldVal, V.DataTable.dtMaterialCosts(V.Local.iCounter2).ACT_OUTS_REC!FieldVal, V.DataTable.dtMaterialCosts(V.Local.iCounter2).TOTAL_HOURS!FieldVal, V.DataTable.dtMaterialCosts(V.Local.iCounter2).VAR_HOURS!FieldVal, V.DataTable.dtMaterialCosts(V.Local.iCounter2).CUR_LABR!FieldVal, V.DataTable.dtMaterialCosts(V.Local.iCounter2).ACT_LABR!FieldVal, V.DataTable.dtMaterialCosts(V.Local.iCounter2).ACT_OUTS!FieldVal, V.DataTable.dtMaterialCosts(V.Local.iCounter2).TOTAL_DLLS!FieldVal, V.DataTable.dtMaterialCosts(V.Local.iCounter2).VAR_DLLS!FieldVal, V.Local.sSQL)
+			F.ODBC.Connection!Con.Execute(V.Local.sSQL)
+		
+		F.Intrinsic.Control.Next(V.Local.iCounter2)
+		
+		'Closing dts
+		F.Data.DataTable.Close("dtMaterialCosts")
+		F.Data.DataTable.Close("dtLaborCosts")
+		
+	F.Intrinsic.Control.Next(V.Local.iCounter)
+	
+	'Making form invisible
+	gui.Form_PRJ..Visible(False)
+
+	'Calling preprocessor
+	F.Intrinsic.Control.CallSub("RunPreprocessor")
+
+F.Intrinsic.Control.Catch
+
+	F.Intrinsic.Control.CallSub(CatchError)
+	
+F.Intrinsic.Control.EndTry
+Program.Sub.cmd_Print_Click.End
+
+Program.Sub.CheckTable.Start
+'This subroutine verifies if tables exists in DB, creates it if it doesn't
+F.Intrinsic.Control.Try
+
+	V.Local.bExists.Declare(Boolean)
+	
+	F.ODBC.Connection!Con.OpenCompanyConnection
+	F.ODBC.Connection!Con.TableExists("GCG_6849", V.Local.bExists)
+		F.Intrinsic.Control.If(V.Local.bExists, =, False)
+			F.ODBC.Connection!Con.Execute("CREATE TABLE GCG_6849 (TRMNL CHAR(3), USER_ID CHAR(10), PROJECT_NO CHAR(7), GROUP_CODE CHAR(6), GROUP_NAME CHAR(30), GROUP_TYPE CHAR(1), POS INTEGER, HRS_QTE INTEGER, HRS_ACTINT INTEGER, HRS_ACTOUT INTEGER, HRS_TOTAL INTEGER, HRS_VAR INTEGER, DLLS_QTE INTEGER, DLLS_ACTINT INTEGER, DLLS_ACTOUT INTEGER, DLLS_TOTAL INTEGER, DLLS_VAR INTEGER);")
+		F.Intrinsic.Control.EndIf
+	F.ODBC.Connection!Con.Close
+
+F.Intrinsic.Control.Catch
+
+	F.Intrinsic.Control.CallSub(CatchError)
+	
+F.Intrinsic.Control.EndTry
+
+Program.Sub.CheckTable.End
+
+Program.Sub.RunPreprocessor.Start
+'This subroutine prints the custom report
+
+F.Intrinsic.Control.Try
+
+	V.Local.iReportID.Declare(Long) 
+	V.Local.iBIRunID.Declare(Long)
+	V.Local.iBILogID.Declare(Long)
+	V.Local.iReturn.Declare(Long)
+	V.Local.sPN.Declare(String, "TERMINAL") 
+	V.Local.sPV.Declare(String)
+	
+	'Setting terminal number as the parameter value 
+	V.Local.sPV.Set(V.Caller.Terminal)
+	
+	'Running report commands to print custom report
+	F.Global.BI.InitializeReport("", "GCG_6849_ProjectStatus.rpt", V.Local.iReportID)
+	F.Global.BI.GetRunID(V.Local.iBIRunID)
+	F.Global.BI.StartLogging(V.Local.iBIRunID, V.Local.iReportID, -1, "", V.Local.iBILogID)
+	F.Global.BI.StopLogging(V.Local.iBILogID)
+	F.Global.BI.RunReportPreProcessor(V.Local.iBIRunID, V.Local.iBILogID, V.Local.sPN, V.Local.sPV, "", -1, True, "", -1, "", -1, "", "", V.Local.iReturn)
+	
+	'Calling unload since report has been printed already
+	F.Intrinsic.Control.CallSub("Form_PRJ_UnLoad")
+	
+F.Intrinsic.Control.Catch
+
+	F.Intrinsic.Control.CallSub(CatchError)
+	
+F.Intrinsic.Control.EndTry
+Program.Sub.RunPreprocessor.End
+
+Program.Sub.MaterialCosts.Start
+'This subroutine retrieves material cost information
+
+F.Intrinsic.Control.Try
+
+	V.Local.sProject.Declare(String)
+	v.Local.sSQL.Declare(String)
+	v.Local.fLogistics.Declare(Float)
+	v.Local.fTE.Declare(Float)
+	v.Local.sSuffixes.Declare(String)
+	v.Local.fMechanical.Declare(Float)
+	v.Local.fControls.Declare(Float)
+	v.Local.fMachining.Declare(Float)
+	v.Local.fMachining2.Declare(Float)
+	v.Local.fMachining3.Declare(Float)
+	v.Local.fMachining4.Declare(Float)
+	V.Local.fTotMachining.Declare(Float)
+	v.Local.sMaterialRecord.Declare(String)
+	v.Local.fParentMechanical.Declare(Float)
+	v.Local.fTotMaterial.Declare(Float)
+
+	V.Local.sProject.Set(V.Args.Project)
+	
+	'Manually creating dt to be filled in later
+	F.Data.DataTable.Create("dtMaterialCosts", True)
+	F.Data.DataTable.AddColumn("dtMaterialCosts", "PROJECT", "String")
+	F.Data.DataTable.AddColumn("dtMaterialCosts", "F_GROUP", "String")
+	F.Data.DataTable.AddColumn("dtMaterialCosts", "GROUP_NAME", "String")
+	F.Data.DataTable.AddColumn("dtMaterialCosts", "POS", "Float")
+	F.Data.DataTable.AddColumn("dtMaterialCosts", "GROUP_TYPE", "String")
+	F.Data.DataTable.AddColumn("dtMaterialCosts", "CUR_HOURS", "Float")
+	F.Data.DataTable.AddColumn("dtMaterialCosts", "ACT_HOURS", "Float")
+	F.Data.DataTable.AddColumn("dtMaterialCosts", "ACT_OUTS_REC", "Float")
+	F.Data.DataTable.AddColumn("dtMaterialCosts", "TOTAL_HOURS", "Float")
+	F.Data.DataTable.AddColumn("dtMaterialCosts", "VAR_HOURS", "Float")
+	F.Data.DataTable.AddColumn("dtMaterialCosts", "CUR_LABR", "Float")
+	F.Data.DataTable.AddColumn("dtMaterialCosts", "ACT_LABR", "Float")
+	F.Data.DataTable.AddColumn("dtMaterialCosts", "ACT_OUTS", "Float")
+	F.Data.DataTable.AddColumn("dtMaterialCosts", "TOTAL_DLLS", "Float")
+	
+	'Validating if there is a MATERIAL record for the project's current budget. If there is, it means it is an older project.MATL1 to test with new cateogires, MATL to get single material record in report.
+	' Based on history option, retrieving data from either active or history table.
+	F.Intrinsic.Control.If(v.Screen.Form_PRJ!chkHistory.Value, =,1)
+		F.Intrinsic.String.Build("select * from V_PROJ_H_CURR_BDG where PROJECT = '{0}' and F_GROUP = 'MATL';", V.Local.sProject, V.Local.sSQL)
+	f.Intrinsic.Control.Else
+		F.Intrinsic.String.Build("select * from V_PROJECT_CURR_BUDG where PROJECT = '{0}' and F_GROUP = 'MATL';", V.Local.sProject, V.Local.sSQL)
+	F.Intrinsic.Control.EndIf
+	
+	f.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSQL, V.Local.sMaterialRecord)
+	
+	F.Intrinsic.Control.If(V.Ambient.ExecuteAndReturnEOF, =, False)
+		
+		'Getting value from PO_HISTORY since this is an older project
+		F.Intrinsic.String.Build("select sum(EXTENSION) from V_PO_HISTORY where JOB = '{0}' and SUFFIX <> '008' and DATE_RECEIVED = '1900-01-01';", V.Local.sProject, V.Local.sSQL)
+		f.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSQL, V.Local.fTotMaterial)
+		F.Data.DataTable.AddRow("dtMaterialCosts", "PROJECT", V.Local.sProject, "F_GROUP", "MATL", "GROUP_NAME", "", "POS", 1, "GROUP_TYPE", "M", "CUR_HOURS", "0", "ACT_HOURS", "0", "ACT_OUTS_REC", "0", "TOTAL_HOURS", "0", "VAR_HOURS", "0", "CUR_LABR", "0", "ACT_LABR", "0", "ACT_OUTS", "0", "TOTAL_DLLS", V.Local.fTotMaterial.Long)
+	
+	F.Intrinsic.Control.Else
+	
+		'There is no material category, which means it has been broken down into new categories.
+		''Mechanical category
+		'Validating if specific WO suffix is a parent
+		F.Intrinsic.String.Build("select RTRIM(SUFFIX) SUFFIX from V_JOB_HEADER where JOB = '{0}' and PARENT_SUFFIX_PARENT = '002';", V.Local.sProject, V.Local.sSQL)
+		f.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSQL, V.Local.sSuffixes)
+		
+		F.Intrinsic.Control.If(V.Ambient.ExecuteAndReturnEOF, =, False)
+			'Getting the sum of all their chilren material seq's dollars
+			F.Intrinsic.String.Replace(v.Local.sSuffixes, "#$#", "','", v.Local.sSuffixes)
+			F.Intrinsic.String.Build("select sum(DOLLARS_ACTUAL) from V_JOB_OPERATIONS where JOB = '{0}' and SUFFIX in ('{1}') and LMO = 'M';", V.Local.sProject, v.Local.sSuffixes, V.Local.sSQL)
+			f.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSQL, V.Local.fMechanical)
+		F.Intrinsic.Control.Else
+			'Getting the sum of all its material seq's dollars
+			F.Intrinsic.String.Build("select sum(DOLLARS_ACTUAL) from V_JOB_OPERATIONS where JOB = '{0}' and SUFFIX = '002' and LMO = 'M';", V.Local.sProject, V.Local.sSQL)
+			f.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSQL, V.Local.fMechanical)
+		F.Intrinsic.Control.EndIf
+		
+		'Getting material dlls linked to suffix 000
+		F.Intrinsic.String.Build("select sum(DOLLARS_ACTUAL) from V_JOB_OPERATIONS where JOB = '{0}' and SUFFIX = '000' and LMO = 'M';", V.Local.sProject, V.Local.sSQL)
+		f.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSQL, V.Local.fParentMechanical)
+		F.Intrinsic.Math.Add(V.Local.fMechanical, V.Local.fParentMechanical, V.Local.fMechanical)
+		
+		F.Data.DataTable.AddRow("dtMaterialCosts", "PROJECT", V.Local.sProject, "F_GROUP", "MDESIG", "GROUP_NAME", "", "POS", 1, "GROUP_TYPE", "M", "CUR_HOURS", "0", "ACT_HOURS", "0", "ACT_OUTS_REC", "0", "TOTAL_HOURS", "0", "VAR_HOURS", "0", "CUR_LABR", "0", "ACT_LABR", "0", "ACT_OUTS", "0", "TOTAL_DLLS", V.Local.fMechanical.Long)
+		
+		''Controls category
+		'Validating if specific WO suffix is a parent
+		F.Intrinsic.String.Build("select RTRIM(SUFFIX) SUFFIX from V_JOB_HEADER where JOB = '{0}' and PARENT_SUFFIX_PARENT = '003';", V.Local.sProject, V.Local.sSQL)
+		f.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSQL, V.Local.sSuffixes)
+		
+		F.Intrinsic.Control.If(V.Ambient.ExecuteAndReturnEOF, =, False)
+			'Getting the sum of all their chilren material seq's dollars
+			F.Intrinsic.String.Replace(v.Local.sSuffixes, "#$#", "','", v.Local.sSuffixes)
+			F.Intrinsic.String.Build("select sum(DOLLARS_ACTUAL) from V_JOB_OPERATIONS where JOB = '{0}' and SUFFIX in ('{1}') and LMO = 'M';", V.Local.sProject, v.Local.sSuffixes, V.Local.sSQL)
+			f.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSQL, V.Local.fControls)
+		F.Intrinsic.Control.Else
+			'Getting the sum of all its material seq's dollars
+			F.Intrinsic.String.Build("select sum(DOLLARS_ACTUAL) from V_JOB_OPERATIONS where JOB = '{0}' and SUFFIX = '003' and LMO = 'M';", V.Local.sProject, V.Local.sSQL)
+			f.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSQL, V.Local.fControls)
+		F.Intrinsic.Control.EndIf
+		
+		F.Data.DataTable.AddRow("dtMaterialCosts", "PROJECT", V.Local.sProject, "F_GROUP", "MCNTRL", "GROUP_NAME", "", "POS", 2, "GROUP_TYPE", "M", "CUR_HOURS", "0", "ACT_HOURS", "0", "ACT_OUTS_REC", "0", "TOTAL_HOURS", "0", "VAR_HOURS", "0", "CUR_LABR", "0", "ACT_LABR", "0", "ACT_OUTS", "0", "TOTAL_DLLS", V.Local.fControls.Long)
+		
+		''Machining/Fab category
+		'Getting actual dollars from specific jobs and suffixes
+		F.Intrinsic.String.Build("select DOLLARS_ACTUAL from V_JOB_OPERATIONS where JOB = '{0}' and SUFFIX = '008' and SEQ = '005000';", V.Local.sProject, V.Local.sSQL)
+		f.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSQL, V.Local.fMachining)
+		F.Intrinsic.String.Build("select DOLLARS_ACTUAL from V_JOB_OPERATIONS where JOB = '{0}' and SUFFIX = '007' and SEQ = '003000';", V.Local.sProject, V.Local.sSQL)
+		f.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSQL, V.Local.fMachining2)
+		F.Intrinsic.String.Build("select DOLLARS_ACTUAL from V_JOB_OPERATIONS where JOB = '{0}' and SUFFIX = '007' and SEQ = '004000';", V.Local.sProject, V.Local.sSQL)
+		f.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSQL, V.Local.fMachining3)
+		F.Intrinsic.String.Build("select DOLLARS_ACTUAL from V_JOB_OPERATIONS where JOB = '{0}' and SUFFIX = '008' and SEQ = '009000';", V.Local.sProject, V.Local.sSQL)
+		f.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSQL, V.Local.fMachining4)
+		
+		'Summing values
+		F.Intrinsic.Math.Add(V.Local.fMachining, V.Local.fMachining4, V.Local.fMachining)
+		F.Intrinsic.Math.Add(V.Local.fMachining2, V.Local.fMachining3, V.Local.fMachining2)
+		F.Intrinsic.Math.Add(V.Local.fMachining, V.Local.fMachining2, V.Local.fTotMachining)
+		
+		'f.Intrinsic.Math.Sub(V.Local.fQuotedLogistics, V.Local.fTotMachining, V.Local.fVarLogistics)
+		F.Data.DataTable.AddRow("dtMaterialCosts", "PROJECT", V.Local.sProject, "F_GROUP", "MACHFA", "GROUP_NAME", "", "POS", 3, "GROUP_TYPE", "M", "CUR_HOURS", "0", "ACT_HOURS", "0", "ACT_OUTS_REC", "0", "TOTAL_HOURS", "0", "VAR_HOURS", "0", "CUR_LABR", "0", "ACT_LABR", V.Local.fMachining2.Long, "ACT_OUTS", V.Local.fMachining.Long, "TOTAL_DLLS", V.Local.fTotMachining.Long)
+		
+		''Logistics category
+		'Getting actual dollars from specific job and suffix
+		F.Intrinsic.String.Build("select DOLLARS_ACTUAL from V_JOB_OPERATIONS where JOB = '{0}' and SUFFIX = '008' and SEQ = '007000';", V.Local.sProject, V.Local.sSQL)
+		f.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSQL, V.Local.fLogistics)
+		F.Data.DataTable.AddRow("dtMaterialCosts", "PROJECT", V.Local.sProject, "F_GROUP", "LOGSTC", "GROUP_NAME", "", "POS", 4, "GROUP_TYPE", "M", "CUR_HOURS", "0", "ACT_HOURS", "0", "ACT_OUTS_REC", "0", "TOTAL_HOURS", "0", "VAR_HOURS", "0", "CUR_LABR", "0", "ACT_LABR", "0", "ACT_OUTS", "0", "TOTAL_DLLS", V.Local.fLogistics.Long)
+		
+		''Travel and Expenses category
+		'Getting actual dollars from specific job and suffix
+		F.Intrinsic.String.Build("select DOLLARS_ACTUAL from V_JOB_OPERATIONS where JOB = '{0}' and SUFFIX = '008' and SEQ = '008000';", V.Local.sProject, V.Local.sSQL)
+		f.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSQL, V.Local.fTE)
+		F.Data.DataTable.AddRow("dtMaterialCosts", "PROJECT", V.Local.sProject, "F_GROUP", "T&E", "GROUP_NAME", "", "POS", 5, "GROUP_TYPE", "M", "CUR_HOURS", "0", "ACT_HOURS", "0", "ACT_OUTS_REC", "0", "TOTAL_HOURS", "0", "VAR_HOURS", "0", "CUR_LABR", "0", "ACT_LABR", "0", "ACT_OUTS", "0", "TOTAL_DLLS", V.Local.fTE.Long)
+	
+	F.Intrinsic.Control.EndIf
+	
+	'Adding expression column to calculate variance between quoted dlls and actual dlls
+	F.Data.DataTable.AddExpressionColumn("dtMaterialCosts", "VAR_DLLS", "Float", "[CUR_LABR] - [TOTAL_DLLS]")
+		
+	'Dictionary to get group name based on F_GROUP
+	F.Data.Dictionary.CreateFromSQL("dictGroup", "Con", "select RTRIM(F_GROUP) F_GROUP, RTRIM(DESCR) DESCR from V_PROJECT_GROUP;")
+	F.Data.Dictionary.SetDefaultReturn("dictGroup", "")
+	F.Data.DataTable.FillFromDictionary("dtMaterialCosts", "dictGroup", "F_GROUP", "GROUP_NAME")
+	F.Data.Dictionary.Close("dictGroup")
+
+	'Dictionary to get material quoted cost based on F_GROUP. Based on history option, retrieving data from either active or history table.
+	F.Intrinsic.Control.If(v.Screen.Form_PRJ!chkHistory.Value, =,1)
+		F.Intrinsic.String.Build("select RTRIM(F_GROUP) F_GROUP, CUR_MATL from V_PROJ_H_CURR_BDG where PROJECT = '{0}';", V.Local.sProject, V.Local.sSQL)
+	f.Intrinsic.Control.Else
+		F.Intrinsic.String.Build("select RTRIM(F_GROUP) F_GROUP, CUR_MATL from V_PROJECT_CURR_BUDG where PROJECT = '{0}';", V.Local.sProject, V.Local.sSQL)
+	F.Intrinsic.Control.EndIf
+	
+	F.Data.Dictionary.CreateFromSQL("dictQuotedCost", "Con", V.Local.sSQL)
+	F.Data.Dictionary.SetDefaultReturn("dictQuotedCost", "0")
+	F.Data.DataTable.FillFromDictionary("dtMaterialCosts", "dictQuotedCost", "F_GROUP", "CUR_LABR")
+	F.Data.Dictionary.Close("dictQuotedCost")
+
+F.Intrinsic.Control.Catch
+
+	F.Intrinsic.Control.CallSub(CatchError)
+	
+F.Intrinsic.Control.EndTry
+Program.Sub.MaterialCosts.End
+
+Program.Sub.LaborCosts.Start
+'This subroutine retrieves labor cost information
+
+F.Intrinsic.Control.Try
+
+	V.Local.sProject.Declare(String)
+	v.Local.sSQL.Declare(String)
+	
+	V.Local.sProject.Set(V.Args.Project)
+	
+	'Creating from project's labor cost information. Based on history option, retrieving data from either active or history table.
+	F.Intrinsic.Control.If(v.Screen.Form_PRJ!chkHistory.Value, =,1)
+		F.Intrinsic.String.Build("select RTRIM(A.PROJECT) PROJECT, RTRIM(A.F_GROUP) F_GROUP, cast(A.POS as Float) as POS, 'L' as GROUP_TYPE, cast(A.CUR_HOURS as Float) as CUR_HOURS, cast(A.ACT_HOURS as Float) as ACT_HOURS, cast(round(A.ACT_OUTS_REC, 0) as Float) as ACT_OUTS_REC, cast(A.CUR_LABR as Float) as CUR_LABR, cast(A.ACT_LABR as Float) as ACT_LABR, cast(A.ACT_OUTS as Float) as ACT_OUTS, RTRIM(B.DESCR) as GROUP_NAME from V_PROJ_H_CURR_BDG A left join PROJECT_GROUP B on A.F_GROUP = B.F_GROUP where A.PROJECT ='{0}' and A.CUR_LABR <> '0' and A.F_GROUP not in ('MACHIN','FABRCT','PAINTR') order by A.POS;", V.Local.sProject, V.Local.sSQL)
+	f.Intrinsic.Control.Else
+		F.Intrinsic.String.Build("select RTRIM(A.PROJECT) PROJECT, RTRIM(A.F_GROUP) F_GROUP, cast(A.POS as Float) as POS, 'L' as GROUP_TYPE, cast(A.CUR_HOURS as Float) as CUR_HOURS, cast(A.ACT_HOURS as Float) as ACT_HOURS, cast(round(A.ACT_OUTS_REC, 0) as Float) as ACT_OUTS_REC, cast(A.CUR_LABR as Float) as CUR_LABR, cast(A.ACT_LABR as Float) as ACT_LABR, cast(A.ACT_OUTS as Float) as ACT_OUTS, RTRIM(B.DESCR) as GROUP_NAME from V_PROJECT_CURR_BUDG A left join PROJECT_GROUP B on A.F_GROUP = B.F_GROUP where A.PROJECT ='{0}' and A.CUR_LABR <> '0' and A.F_GROUP not in ('MACHIN','FABRCT','PAINTR') order by A.POS;", V.Local.sProject, V.Local.sSQL)
+	F.Intrinsic.Control.EndIf
+	
+	f.Data.DataTable.CreateFromSQL("dtLaborCosts", "Con", V.Local.sSQL, True)
+	
+	'Creating expression columns to get total number of hours/dlls and its variance with respect to quoted hours/dlls
+	F.Data.DataTable.AddExpressionColumn("dtLaborCosts", "TOTAL_HOURS", "Float", "[ACT_HOURS] + [ACT_OUTS_REC]")
+	F.Data.DataTable.AddExpressionColumn("dtLaborCosts", "VAR_HOURS", "Float", "[CUR_HOURS] - [TOTAL_HOURS]")
+	F.Data.DataTable.AddExpressionColumn("dtLaborCosts", "TOTAL_DLLS", "Float", "[ACT_LABR] + [ACT_OUTS]")
+	
+	'Note: When you merge dts, if source dt has expression columns then those will be applied to all the data from target dt too.
+	
+F.Intrinsic.Control.Catch
+
+	F.Intrinsic.Control.CallSub(CatchError)
+	
+F.Intrinsic.Control.EndTry
+Program.Sub.LaborCosts.End
+
+Program.Sub.Comments.Start
+${$5$}$20.1.8223.27623$}$1
+${$6$}$apadilla$}$20220818154120628$}$Lag9STqBJOmNXSbd5+msRcBWPGz0aFqSzPePUG9qWbygEsJRrCcetyld7hrUMoGAEK3+TPRxd5r7ujJgQo3bSw==
+Program.Sub.Comments.End
